@@ -15,4 +15,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag dxas90/bobrdb:$(date +%s)
+      run: docker build . --file Dockerfile --tag docker.pkg.github.com/dxas90/bobrdb/bobrdb:$GITHUB_SHA
+    - name: login
+      run: cat $GITHUB_TOKEN | docker login docker.pkg.github.com -u dxas90 --password-stdin
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+    - name: push
+      run: docker push docker.pkg.github.com/dxas90/bobrdb/bobrdb:$GITHUB_SHA
